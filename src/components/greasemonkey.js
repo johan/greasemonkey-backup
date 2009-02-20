@@ -242,7 +242,7 @@ var greasemonkeyService = {
       resources = new GM_Resources(script);
 
       sandbox.window = safeWin;
-      sandbox.document = sandbox.window.document;
+      sandbox.document = safeDoc;
       sandbox.unsafeWindow = unsafeContentWin;
 
       // hack XPathResult since that is so commonly used
@@ -288,10 +288,24 @@ var greasemonkeyService = {
                          contents +
                          "\n";
       if (!script.unwrap)
-        scriptSrc = "(function(){"+ scriptSrc +"})()";
+        scriptSrc = wrap(scriptSrc);
       if (!this.evalInSandbox(scriptSrc, url, sandbox, script) && script.unwrap)
-        this.evalInSandbox("(function(){"+ scriptSrc +"})()",
+        this.evalInSandbox(wrap(scriptSrc),
                            url, sandbox, script); // wrap anyway on early return
+    }
+
+    function wrap(src) {
+      return "(function(){\
+                 for (var i in this) {\
+                   if (this[i]==undefined) continue;\
+                     eval('var '+i+' = this[i]');\
+                   if (i.indexOf('GM_')==0)\
+                     delete this[i];\
+                   else\
+                     this[i] = undefined;\
+                 }\
+                 "+ scriptSrc +"\
+               })()";
     }
   },
 
