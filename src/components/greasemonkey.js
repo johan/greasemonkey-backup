@@ -304,7 +304,7 @@ var greasemonkeyService = {
                    else\
                      this[i] = undefined;\
                  }\
-                 "+ scriptSrc +"\
+                 "+ src +"\
                })()";
     }
   },
