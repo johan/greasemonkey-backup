@@ -298,7 +298,7 @@ var greasemonkeyService = {
       return "(function(){\
                  for (var i in this) {\
                    if (this[i]==undefined) continue;\
-                     eval('var '+i+' = this[i]');\
+                   eval('var '+i+' = this[i]');\
                    if (i.indexOf('GM_')==0)\
                      delete this[i];\
                    else\
